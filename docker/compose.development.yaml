@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. MongoDB (Database)
+  
   mongo:
     image: mongo:6.0
     container_name: hackathon-mongo
@@ -9,12 +9,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
-      - mongo-data:/data/db  # <--- This saves your data!
+      - mongo-data:/data/db 
     networks:
       - hackathon-net
-    # Rule: MongoDB is [Not Exposed] to host, only internal network
-
-  # 2. Backend Service
+    
   backend:
     build:
       context: ../backend
@@ -29,16 +27,14 @@ services:
       - mongo
     networks:
       - hackathon-net
-    # Rule: Backend is [Not Exposed] (No ports section here)
-
-  # 3. Gateway Service (The Only Public Entrypoint)
+    
   gateway:
     build:
       context: ../gateway
       dockerfile: Dockerfile
     container_name: hackathon-gateway
     ports:
-      - "5921:8080" # Maps Host 5921 -> Container 8080
+      - "5921:8080" 
     environment:
       - PORT=${GATEWAY_PORT}
       - BACKEND_URL=http://backend:${BACKEND_PORT}
@@ -47,11 +43,11 @@ services:
     networks:
       - hackathon-net
 
-# Define the network
+
 networks:
   hackathon-net:
     driver: bridge
 
-# Define the persistent volume
+
 volumes:
   mongo-data:
